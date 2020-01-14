@@ -102,23 +102,56 @@ router.get('/:id/comments', (req, res) => {
         errorMessage: "The comments information could not be retrieved."
       })
     })
-})
+});
 
 router.delete("/:id", (request, response) => {
   db.findById(id)
-    .then(data => {
-      if (!data) {
-        response.status(404).json({ message: "The post with the specified ID does not exist." })
+    .then(info => {
+      if (!info) {
+        response.status(404).json({ 
+          message: "The post with the specified ID does not exist." 
+        })
       } else {
         db.remove(id)
           .then(deleted => {
-            response.status(201).json({ message: "Deletion successful", deleted })
+            response.status(201).json({ 
+              message: "Deletion successful", deleted 
+            })
           })
       }
     })
     .catch(error => {
-      response.status(500).json({ error: "The post could not be removed." })
+      response.status(500).json({ 
+        error: "The post could not be removed." 
+      })
     })
 });
+
+router.put('/:id', (req, res) => {
+  const body = req.body
+  Info.findById(id)
+  .then(info => {
+    if (!info){
+      res.status(404).json({
+        errorMessage: "The post with the specified ID does not exist."
+      })
+    } else if (!body.title || !body.comments){
+      res.status(400).json({
+        errorMessage: 'Please provide title and contents for the post.'
+      })
+    } else {
+      Info.update(id, body)
+      .then(info => {
+        res.status(200).json(info)
+      })
+      .catch(error => {
+        console.log(error)
+        res.status(500).json({
+          errorMessage: "The post information could not be modified."
+        })
+      })
+    }
+  })
+})
 
 module.exports = router;
