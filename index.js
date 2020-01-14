@@ -1,10 +1,5 @@
-const express = require('express');
+const server = require('./api/server')
 
-const info = require('./data/db.js');
-
-const server = express();
-
-
-
-const port = 7000;
-server.listen(port, () => console.log(`\n ** api on port: ${port} ** \n`));
+server.listen(7000, () => { 
+  console.log(`\n ** Server running on http://localhost:7000 ** \n`)
+});
